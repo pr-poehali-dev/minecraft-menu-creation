@@ -8,7 +8,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Index() {
-  const [activeSection, setActiveSection] = useState<'home' | 'servers' | 'rules' | 'apply'>('home');
+  const [activeSection, setActiveSection] = useState<'home' | 'servers' | 'rules' | 'apply' | 'admin'>('home');
+  const [isAdminAuth, setIsAdminAuth] = useState(false);
+  const [adminLogin, setAdminLogin] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
   const [formData, setFormData] = useState({ name: '', age: '', experience: '', why: '' });
   const [onlinePlayers, setOnlinePlayers] = useState(0);
   const { toast } = useToast();
@@ -73,6 +76,7 @@ export default function Index() {
                 { id: 'servers', label: 'Серверы', icon: 'Server' },
                 { id: 'rules', label: 'Правила', icon: 'BookOpen' },
                 { id: 'apply', label: 'Заявка', icon: 'FileText' },
+                { id: 'admin', label: 'Админ', icon: 'Lock' },
               ].map((item) => (
                 <Button
                   key={item.id}
@@ -294,6 +298,151 @@ export default function Index() {
                 </form>
               </CardContent>
             </Card>
+          </div>
+        )}
+
+        {activeSection === 'admin' && (
+          <div className="space-y-8 animate-in fade-in duration-500">
+            <div className="text-center space-y-2">
+              <h2 className="text-4xl font-bold">Панель разработчика</h2>
+              <p className="text-muted-foreground">Доступ только для администраторов</p>
+            </div>
+            
+            {!isAdminAuth ? (
+              <Card className="max-w-md mx-auto border-border/50">
+                <CardContent className="pt-6">
+                  <form onSubmit={(e) => {
+                    e.preventDefault();
+                    if (adminLogin === 'Lesha' && adminPassword === '20152015') {
+                      setIsAdminAuth(true);
+                      toast({ title: 'Успешно!', description: 'Добро пожаловать, разработчик' });
+                    } else {
+                      toast({ title: 'Ошибка', description: 'Неверный логин или пароль', variant: 'destructive' });
+                    }
+                  }} className="space-y-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="adminLogin">Логин</Label>
+                      <Input
+                        id="adminLogin"
+                        placeholder="Введите логин"
+                        value={adminLogin}
+                        onChange={(e) => setAdminLogin(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="adminPassword">Пароль</Label>
+                      <Input
+                        id="adminPassword"
+                        type="password"
+                        placeholder="Введите пароль"
+                        value={adminPassword}
+                        onChange={(e) => setAdminPassword(e.target.value)}
+                      />
+                    </div>
+                    <Button type="submit" className="w-full gap-2" size="lg">
+                      <Icon name="LogIn" size={18} />
+                      Войти
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-2xl font-bold">Добро пожаловать, Lesha</h3>
+                  <Button variant="outline" onClick={() => {
+                    setIsAdminAuth(false);
+                    setAdminLogin('');
+                    setAdminPassword('');
+                    toast({ title: 'Выход выполнен' });
+                  }} className="gap-2">
+                    <Icon name="LogOut" size={16} />
+                    Выйти
+                  </Button>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <Card className="border-border/50">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Icon name="Users" size={20} />
+                        Статистика игроков
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Всего зарегистрировано:</span>
+                        <span className="font-bold">1,247</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Онлайн сейчас:</span>
+                        <span className="font-bold text-primary">44</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Новых за неделю:</span>
+                        <span className="font-bold">83</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-border/50">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Icon name="Server" size={20} />
+                        Статус серверов
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {servers.map((server, i) => (
+                        <div key={i} className="flex justify-between items-center">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-primary" />
+                            <span>{server.name}</span>
+                          </div>
+                          <span className="text-sm text-muted-foreground">{server.players}</span>
+                        </div>
+                      ))}
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-border/50">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Icon name="FileText" size={20} />
+                        Заявки на рассмотрении
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-bold text-primary">12</div>
+                      <p className="text-sm text-muted-foreground mt-2">Ожидают одобрения</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-border/50">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Icon name="Activity" size={20} />
+                        Производительность
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">CPU:</span>
+                        <span className="font-bold">24%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">RAM:</span>
+                        <span className="font-bold">58%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Uptime:</span>
+                        <span className="font-bold text-primary">99.9%</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </main>
