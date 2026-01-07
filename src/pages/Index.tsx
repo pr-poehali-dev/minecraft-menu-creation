@@ -13,6 +13,10 @@ export default function Index() {
   const [adminLogin, setAdminLogin] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
   const [formData, setFormData] = useState({ name: '', age: '', experience: '', why: '' });
+  const [newDevLogin, setNewDevLogin] = useState('');
+  const [newDevPassword, setNewDevPassword] = useState('');
+  const [banPlayerName, setBanPlayerName] = useState('');
+  const [serverStates, setServerStates] = useState({ survival: true, creative: true, hardcore: true });
   const [onlinePlayers, setOnlinePlayers] = useState(0);
   const { toast } = useToast();
 
@@ -438,6 +442,125 @@ export default function Index() {
                         <span className="text-muted-foreground">Uptime:</span>
                         <span className="font-bold text-primary">99.9%</span>
                       </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-6 mt-8">
+                  <Card className="border-border/50">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Icon name="UserPlus" size={20} />
+                        Добавить разработчика
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <form onSubmit={(e) => {
+                        e.preventDefault();
+                        if (newDevLogin && newDevPassword) {
+                          toast({ title: 'Разработчик добавлен!', description: `Логин: ${newDevLogin}` });
+                          setNewDevLogin('');
+                          setNewDevPassword('');
+                        }
+                      }} className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="devLogin">Логин</Label>
+                          <Input
+                            id="devLogin"
+                            placeholder="Введите логин"
+                            value={newDevLogin}
+                            onChange={(e) => setNewDevLogin(e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="devPassword">Пароль</Label>
+                          <Input
+                            id="devPassword"
+                            type="password"
+                            placeholder="Введите пароль"
+                            value={newDevPassword}
+                            onChange={(e) => setNewDevPassword(e.target.value)}
+                          />
+                        </div>
+                        <Button type="submit" className="w-full gap-2">
+                          <Icon name="Plus" size={16} />
+                          Добавить
+                        </Button>
+                      </form>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-border/50">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Icon name="Power" size={20} />
+                        Управление серверами
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      {[
+                        { id: 'survival', name: 'Survival' },
+                        { id: 'creative', name: 'Creative' },
+                        { id: 'hardcore', name: 'Hardcore' },
+                      ].map((server) => (
+                        <div key={server.id} className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${serverStates[server.id as keyof typeof serverStates] ? 'bg-primary' : 'bg-destructive'}`} />
+                            <span className="font-medium">{server.name}</span>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant={serverStates[server.id as keyof typeof serverStates] ? 'destructive' : 'default'}
+                            onClick={() => {
+                              setServerStates({ ...serverStates, [server.id]: !serverStates[server.id as keyof typeof serverStates] });
+                              toast({ 
+                                title: serverStates[server.id as keyof typeof serverStates] ? 'Сервер остановлен' : 'Сервер запущен',
+                                description: server.name 
+                              });
+                            }}
+                            className="gap-2"
+                          >
+                            <Icon name={serverStates[server.id as keyof typeof serverStates] ? 'Square' : 'Play'} size={14} />
+                            {serverStates[server.id as keyof typeof serverStates] ? 'Стоп' : 'Старт'}
+                          </Button>
+                        </div>
+                      ))}
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-border/50">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Icon name="Ban" size={20} />
+                        Забанить игрока
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <form onSubmit={(e) => {
+                        e.preventDefault();
+                        if (banPlayerName) {
+                          toast({ 
+                            title: 'Игрок забанен!', 
+                            description: `${banPlayerName} больше не может зайти на сервер`,
+                            variant: 'destructive'
+                          });
+                          setBanPlayerName('');
+                        }
+                      }} className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="banPlayer">Игровой ник</Label>
+                          <Input
+                            id="banPlayer"
+                            placeholder="Введите ник игрока"
+                            value={banPlayerName}
+                            onChange={(e) => setBanPlayerName(e.target.value)}
+                          />
+                        </div>
+                        <Button type="submit" variant="destructive" className="w-full gap-2">
+                          <Icon name="UserX" size={16} />
+                          Забанить
+                        </Button>
+                      </form>
                     </CardContent>
                   </Card>
                 </div>
