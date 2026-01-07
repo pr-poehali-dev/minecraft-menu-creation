@@ -189,7 +189,20 @@ export default function Index() {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-3">
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        className="flex-1 gap-2 font-mono text-xs"
+                        onClick={() => {
+                          navigator.clipboard.writeText(server.ip);
+                          toast({ title: 'IP скопирован!', description: server.ip });
+                        }}
+                      >
+                        <Icon name="Copy" size={14} />
+                        {server.ip}
+                      </Button>
+                    </div>
                     <Button className="w-full gap-2">
                       <Icon name="Play" size={16} />
                       Подключиться
