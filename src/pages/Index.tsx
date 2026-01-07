@@ -94,6 +94,28 @@ export default function Index() {
               </div>
             </section>
 
+            <section className="space-y-8">
+              <div className="text-center space-y-2">
+                <h2 className="text-3xl font-bold">Галерея сервера</h2>
+                <p className="text-muted-foreground">Посмотри, что создали наши игроки</p>
+              </div>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  { img: 'https://cdn.poehali.dev/projects/91ce81e7-60bf-4879-83d5-f20a3afde267/files/94956dae-067e-42c3-931e-db979d784aa0.jpg', title: 'Survival', desc: 'Выживание в мире' },
+                  { img: 'https://cdn.poehali.dev/projects/91ce81e7-60bf-4879-83d5-f20a3afde267/files/987ff83c-44d1-4156-acf9-3a6d004017cc.jpg', title: 'Creative', desc: 'Креативные постройки' },
+                  { img: 'https://cdn.poehali.dev/projects/91ce81e7-60bf-4879-83d5-f20a3afde267/files/5ea6ea9d-cc24-422e-9229-9e89e3171dde.jpg', title: 'Hardcore', desc: 'Экстрим режим' },
+                ].map((screenshot, i) => (
+                  <Card key={i} className="border-border/50 hover:border-primary/50 transition-all hover:scale-105 overflow-hidden">
+                    <img src={screenshot.img} alt={screenshot.title} className="w-full h-48 object-cover" />
+                    <CardHeader>
+                      <CardTitle className="text-xl">{screenshot.title}</CardTitle>
+                      <CardDescription className="text-muted-foreground">{screenshot.desc}</CardDescription>
+                    </CardHeader>
+                  </Card>
+                ))}
+              </div>
+            </section>
+
             <section className="grid md:grid-cols-3 gap-6">
               {[
                 { icon: 'Users', title: 'Активное сообщество', desc: 'Более 500 активных игроков' },
