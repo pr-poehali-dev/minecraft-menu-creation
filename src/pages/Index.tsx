@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +10,27 @@ import { useToast } from '@/hooks/use-toast';
 export default function Index() {
   const [activeSection, setActiveSection] = useState<'home' | 'servers' | 'rules' | 'apply'>('home');
   const [formData, setFormData] = useState({ name: '', age: '', experience: '', why: '' });
+  const [onlinePlayers, setOnlinePlayers] = useState(0);
   const { toast } = useToast();
+
+  useEffect(() => {
+    let count = 0;
+    const target = 44;
+    const duration = 2000;
+    const increment = target / (duration / 50);
+    
+    const timer = setInterval(() => {
+      count += increment;
+      if (count >= target) {
+        setOnlinePlayers(target);
+        clearInterval(timer);
+      } else {
+        setOnlinePlayers(Math.floor(count));
+      }
+    }, 50);
+
+    return () => clearInterval(timer);
+  }, []);
 
   const servers = [
     { name: 'Survival', players: '24/100', status: 'online', ip: 'survival.server.net' },
@@ -73,8 +93,13 @@ export default function Index() {
         {activeSection === 'home' && (
           <div className="space-y-16 animate-in fade-in duration-500">
             <section className="text-center space-y-6 py-12">
-              <div className="inline-block px-4 py-2 bg-primary/10 border border-primary/20 rounded-full text-sm text-primary font-medium mb-4">
-                🎮 Ванильный сервер без модов
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-primary/10 border border-primary/20 rounded-full mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  <span className="text-sm font-medium text-primary">Онлайн сейчас:</span>
+                </div>
+                <span className="text-2xl font-bold text-primary tabular-nums">{onlinePlayers}</span>
+                <span className="text-sm text-muted-foreground">/ 180</span>
               </div>
               <h1 className="text-5xl sm:text-6xl font-bold tracking-tight">
                 Добро пожаловать на <span className="text-primary">наш сервер</span>
